@@ -9,15 +9,16 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "COMPANIES")
-@Getter @Setter
+@Getter
+@Setter
 public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID",nullable = false)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "NAME",nullable = false,unique = true)
+    @Column(name = "NAME", nullable = false, unique = true)
     private String name;
 
     @Column(name = "LOGO", length = 500)
