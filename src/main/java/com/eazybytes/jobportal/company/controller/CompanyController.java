@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eazybytes.jobportal.company.service.ICompanyService;
 import com.eazybytes.jobportal.dto.CompanyDto;
-import com.eazybytes.jobportal.service.ICompanyService;
 
 import lombok.RequiredArgsConstructor;
 
