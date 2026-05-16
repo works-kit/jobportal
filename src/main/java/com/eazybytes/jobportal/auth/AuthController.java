@@ -11,6 +11,8 @@ import com.eazybytes.jobportal.repository.JobPortalUserRepository;
 import com.eazybytes.jobportal.repository.RoleRepository;
 import com.eazybytes.jobportal.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -44,6 +47,9 @@ public class AuthController {
 
     @PostMapping(value = "/login/public", version = "1.0")
     public ResponseEntity<LoginResponseDto> apiLogin(@RequestBody LoginRequestDto loginRequestDto) {
+        log.warn("⚠️ WARN: This is a warning! Something might go wrong." + " Attempting login for user: "
+                + loginRequestDto.username());
+        log.error("🚨 ERROR: An error occurred! This needs immediate attention." + loginRequestDto.toString());
         try {
             var resultAuthentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.username(),
