@@ -49,9 +49,9 @@
     </root>
 
     <!-- ===================== -->
-    <!-- Application-specific ERROR logs -->
+    <!-- Application-specific INFO logs -->
     <!-- ===================== -->
-    <logger name="com.eazybytes.jobportal" level="ERROR" additivity="false">
+    <logger name="com.eazybytes.jobportal" level="INFO" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </logger>

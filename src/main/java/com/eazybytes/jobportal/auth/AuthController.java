@@ -1,5 +1,18 @@
 package com.eazybytes.jobportal.auth;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.eazybytes.jobportal.constants.ApplicationConstants;
 import com.eazybytes.jobportal.dto.LoginRequestDto;
 import com.eazybytes.jobportal.dto.LoginResponseDto;
@@ -10,32 +23,12 @@ import com.eazybytes.jobportal.entity.Role;
 import com.eazybytes.jobportal.repository.JobPortalUserRepository;
 import com.eazybytes.jobportal.repository.RoleRepository;
 import com.eazybytes.jobportal.security.util.JwtUtil;
+
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.password.CompromisedPasswordChecker;
-import org.springframework.security.authentication.password.CompromisedPasswordDecision;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@Slf4j
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -43,13 +36,9 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JobPortalUserRepository jobPortalUserRepository;
     private final RoleRepository roleRepository;
-    private final CompromisedPasswordChecker compromisedPasswordChecker;
 
     @PostMapping(value = "/login/public", version = "1.0")
     public ResponseEntity<LoginResponseDto> apiLogin(@RequestBody LoginRequestDto loginRequestDto) {
-        log.warn("⚠️ WARN: This is a warning! Something might go wrong." + " Attempting login for user: "
-                + loginRequestDto.username());
-        log.error("🚨 ERROR: An error occurred! This needs immediate attention." + loginRequestDto.toString());
         try {
             var resultAuthentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.username(),
@@ -79,26 +68,6 @@ public class AuthController {
 
     @PostMapping(value = "/register/public", version = "1.0")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequestDto registerRequestDto) {
-        CompromisedPasswordDecision decision = compromisedPasswordChecker
-                .check(registerRequestDto.password());
-        if (decision.isCompromised()) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("password", "Choose a strong password"));
-        }
-        Optional<JobPortalUser> existingUser = jobPortalUserRepository
-                .readUserByEmailOrMobileNumber(registerRequestDto.email(), registerRequestDto.mobileNumber());
-        if (existingUser.isPresent()) {
-            Map<String, String> errors = new HashMap<>();
-            JobPortalUser jobPortalUser = existingUser.get();
-            if (jobPortalUser.getEmail().equalsIgnoreCase(registerRequestDto.email())) {
-                errors.put("email", "Email is already registered");
-            }
-            if (jobPortalUser.getMobileNumber().equals(registerRequestDto.mobileNumber())) {
-                errors.put("mobileNumber", "Mobile number is already registered");
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-        }
         JobPortalUser jobPortalUser = new JobPortalUser();
         BeanUtils.copyProperties(registerRequestDto, jobPortalUser);
         jobPortalUser.setPasswordHash(passwordEncoder.encode(registerRequestDto.password()));

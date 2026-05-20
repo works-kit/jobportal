@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eazybytes.jobportal.aspects.LogAspect;
 import com.eazybytes.jobportal.company.service.ICompanyService;
 import com.eazybytes.jobportal.dto.CompanyDto;
 
@@ -25,12 +26,14 @@ public class CompanyController {
     // this.companyService = companyService;
     // }
 
+    @LogAspect
     @GetMapping(version = "1.0", path = "/public")
     public ResponseEntity<List<CompanyDto>> getAllCompaniesPublic() {
         List<CompanyDto> companyList = companyService.getAllCompanies();
         return ResponseEntity.ok().body(companyList);
     }
 
+    @LogAspect
     @GetMapping(version = "1.0")
     public ResponseEntity<List<CompanyDto>> getAllCompanies() {
         List<CompanyDto> companyList = companyService.getAllCompanies();
