@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.eazybytes.jobportal.company.service.ICompanyService;
+import com.eazybytes.jobportal.constants.ApplicationConstants;
 import com.eazybytes.jobportal.dto.CompanyDto;
 import com.eazybytes.jobportal.dto.JobDto;
 import com.eazybytes.jobportal.entity.Company;
@@ -22,7 +23,8 @@ public class CompanyServiceImpl implements ICompanyService {
 
     @Override
     public List<CompanyDto> getAllCompanies() {
-        List<Company> companyList = companyRepository.findAll();
+        List<Company> companyList = companyRepository
+                .fetchCompaniesWithJobsByStatus(ApplicationConstants.CLOSED_STATUS);
         return companyList.stream().map(this::transformCompanyToDto).collect(Collectors.toList());
     }
 
