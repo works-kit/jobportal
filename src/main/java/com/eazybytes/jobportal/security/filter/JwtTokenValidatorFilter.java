@@ -41,7 +41,8 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
         if (null != authHeader) {
             try {
                 // Extract the JWT token
-                // Whoever bears (holds) the token is trusted and can access the protected resource.
+                // Whoever bears (holds) the token is trusted and can access the protected
+                // resource.
                 String jwt = authHeader.substring(7); // Remove 'Bearer ' prefix
                 Environment env = getEnvironment();
                 if (null != env) {
@@ -51,7 +52,7 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
                     if (null != secretKey) {
                         Claims claims = Jwts.parser().verifyWith(secretKey)
                                 .build().parseSignedClaims(jwt).getPayload();
-                        String username = String.valueOf(claims.get("username"));
+                        String username = String.valueOf(claims.get("email"));
                         String roles = String.valueOf(claims.get("roles"));
                         Authentication authentication = new UsernamePasswordAuthenticationToken(username,
                                 null, AuthorityUtils.commaSeparatedStringToAuthorityList(roles));
@@ -74,7 +75,6 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return publicPaths.stream().anyMatch(publicPath ->
-                pathMatcher.match(publicPath, path));
+        return publicPaths.stream().anyMatch(publicPath -> pathMatcher.match(publicPath, path));
     }
 }
