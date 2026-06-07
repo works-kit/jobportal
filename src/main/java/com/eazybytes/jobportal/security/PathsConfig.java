@@ -12,8 +12,8 @@ public class PathsConfig {
     public List<String> publicPaths() {
         return List.of(
                 "/api/contacts/public",
-                "/api/companies/public",
                 "/api/auth/login/public",
+                "/api/companies/public",
                 "/api/auth/register/public",
                 "/api/csrf-token/public",
                 "/api/logging/public",
@@ -37,7 +37,12 @@ public class PathsConfig {
                 "/api/contacts/admin",
                 "/api/contacts/sort/admin",
                 "/api/contacts/page/admin",
-                "/api/contacts/${id}/status/admin");
+                "/api/contacts/${id}/status/admin",
+                "/api/companies/admin",
+                "/api/companies/${id}/admin",
+                "/api/users/search/admin",
+                "/api/users/${userId}/role/employer/admin",
+                "/api/users/${userId}/role/employer/admin");
     }
 
 }
